@@ -11,10 +11,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpRange;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/track")
@@ -41,6 +39,7 @@ public class TrackController {
         return "the id is : " + id;
     }
 
+    // upload using the key "file" and value of file
     @GetMapping("/{id}")
     public ResponseEntity<ResourceRegion> stream(@PathVariable String id, @RequestHeader HttpHeaders headers) {
         try {
@@ -71,6 +70,13 @@ public class TrackController {
             rangeLength = Math.min(256 * 1024L, contentLength);
             return new ResourceRegion(resource, 0, rangeLength);
         }
+    }
+
+    // upload using key of "files" and the value of data
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> uploadTracks(@RequestParam("files") MultipartFile[] files) throws IOException {
+        service.saveTracks(List.of(files));
+        return ResponseEntity.ok().build();
     }
 
 }
