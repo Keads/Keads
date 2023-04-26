@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -147,5 +148,19 @@ public class TrackController {
         }
     }
 
+
+    @DeleteMapping("/{ids}")
+    public ResponseEntity<String> deleteFiles(@PathVariable("ids") String ids) {
+        List<String> idList = Arrays.asList(ids.split(","));
+        for (String id : idList) {
+            gridFsTemplate.delete(new Query(Criteria.where("_id").is(new ObjectId(id))));
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
 
 }

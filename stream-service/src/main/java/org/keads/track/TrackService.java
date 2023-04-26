@@ -46,7 +46,6 @@ public class TrackService {
     public String addOne(MultipartFile file) throws Exception {
         DBObject metadata = new BasicDBObject();
         printMetadata(file.getInputStream());
-        String artworkID = extractAndStoreArtworkInGridFS(file.getInputStream());
         metadata.put("type", file.getContentType());
         metadata.put("title", file.getOriginalFilename());
         ObjectId id = gridFsTemplate.store(
@@ -54,7 +53,7 @@ public class TrackService {
                 file.getOriginalFilename(),
                 file.getContentType(),
                 metadata);
-        String returner = "Song id: " + id.toString() + " and the artwork id is: " + artworkID;
+        String returner = "Song id: " + id.toString();
         return returner;
     }
 
@@ -113,11 +112,10 @@ public class TrackService {
         for (MultipartFile track : tracks) {
             DBObject metadata = new BasicDBObject();
             printMetadata(track.getInputStream());
-            String artworkId = extractAndStoreArtworkInGridFS(track.getInputStream());
             metadata.put("filename", track.getOriginalFilename());
             metadata.put("contentType", track.getContentType());
             ObjectId trackId = gridFsTemplate.store(track.getInputStream(), track.getOriginalFilename(), metadata);
-            trackIds.add("track id: " +trackId.toString() + "artwork id: " + artworkId);
+            trackIds.add("track id: " +trackId.toString());
         }
         return trackIds;
     }
