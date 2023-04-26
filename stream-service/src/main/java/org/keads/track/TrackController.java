@@ -4,6 +4,7 @@ import com.mongodb.client.gridfs.GridFSDownloadStream;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.poi.util.IOUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.support.ResourceRegion;
@@ -13,6 +14,7 @@ import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.http.*;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -34,9 +36,9 @@ public class TrackController {
     private GridFsTemplate gridFsTemplate;
 
     @PostMapping("/add")
-    public String addOne(@RequestParam("file") MultipartFile file) throws IOException {
+    public String addOne(@RequestParam("file") MultipartFile file) throws Exception {
         String id = service.addOne(file);
-        return "the id is : " + id;
+        return id;
     }
 
     // upload using the key "file" and value of file
@@ -78,5 +80,31 @@ public class TrackController {
         service.saveTracks(List.of(files));
         return ResponseEntity.ok().build();
     }
+
+
+    @GetMapping("/image/{id}")
+    public void getImage(@PathVariable String id, HttpServletResponse response) {
+        try {
+            ObjectId objectId = new ObjectId(id);
+            GridFSFile file = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(objectId)));
+            if (file != null) {
+                GridFsResource resource = gridFsTemplate.getResource(file);
+                InputStream inputStream = resource.getInputStream();
+                Object contentTypeObj = file.getMetadata().get("contentType");
+                if (contentTypeObj != null) {
+                    String contentType = contentTypeObj.toString();
+                    response.setContentType(contentType);
+                }
+                response.setCharacterEncoding("UTF-8");
+                StreamUtils.copy(inputStream, response.getOutputStream());
+                response.flushBuffer();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 
 }
