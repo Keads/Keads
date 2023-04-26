@@ -1,5 +1,6 @@
 package org.keads.track;
 
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.client.gridfs.model.GridFSUploadOptions;
@@ -26,7 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
 
 
-import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -57,7 +58,9 @@ public class TrackService {
         return returner;
     }
 
-    private void printMetadata(InputStream inputStream) {
+
+
+        private void printMetadata(InputStream inputStream) {
         Tika tika = new Tika();
         Metadata metadata = new Metadata();
         ParseContext parseContext = new ParseContext();
