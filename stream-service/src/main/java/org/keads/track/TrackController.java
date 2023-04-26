@@ -1,15 +1,23 @@
 package org.keads.track;
 
+import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSDownloadStream;
 import com.mongodb.client.gridfs.model.GridFSFile;
+import com.mongodb.client.model.Filters;
+import com.mpatric.mp3agic.ID3v2;
+import com.mpatric.mp3agic.InvalidDataException;
+import com.mpatric.mp3agic.Mp3File;
+import com.mpatric.mp3agic.UnsupportedTagException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.poi.util.IOUtils;
+import org.apache.tika.Tika;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.support.ResourceRegion;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.http.*;
@@ -19,10 +27,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/track")
@@ -34,6 +41,8 @@ public class TrackController {
 
     @Autowired
     private GridFsTemplate gridFsTemplate;
+
+
 
     @PostMapping("/add")
     public String addOne(@RequestParam("file") MultipartFile file) throws Exception {
@@ -104,7 +113,39 @@ public class TrackController {
         }
     }
 
+    @GetMapping("/mp3/{id}/artwork")
+    public ResponseEntity<byte[]> getMp3Artwork(@PathVariable("id") ObjectId id) throws IOException {
+        GridFSFile file = gridFsTemplate.findOne(Query.query(Criteria.where("_id").is(id)));
+        if (file == null) {
+            return ResponseEntity.notFound().build();
+        }
 
+        GridFsResource resource = gridFsTemplate.getResource(file);
+        InputStream inputStream = resource.getInputStream();
+        try {
+            File tempFile = File.createTempFile("temp", ".mp3");
+            FileOutputStream outputStream = new FileOutputStream(tempFile);
+            IOUtils.copy(inputStream, outputStream);
+            outputStream.close();
+
+            // Create the Mp3File object from the temporary file
+            Mp3File mp3file = new Mp3File(tempFile.getPath());
+
+            if (mp3file.hasId3v2Tag() && mp3file.getId3v2Tag().getAlbumImage() != null) {
+                byte[] imageData = mp3file.getId3v2Tag().getAlbumImage();
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.parseMediaType(mp3file.getId3v2Tag().getAlbumImageMimeType()));
+                headers.setContentLength(imageData.length);
+                return new ResponseEntity<>(imageData, headers, HttpStatus.OK);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (InvalidDataException e) {
+            throw new RuntimeException(e);
+        } catch (UnsupportedTagException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
 }
