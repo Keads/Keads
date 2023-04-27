@@ -1,9 +1,0 @@
-spring:
-  data:
-    mongodb:
-      uri: mongodb://localhost:32768
-      database: StreamDB
-  servlet:
-    multipart:
-      maxFileSize: 50MB
-      maxRequestSize: 50MB
