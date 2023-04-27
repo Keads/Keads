@@ -1,36 +1,24 @@
 package org.keads.track;
 
-import com.mongodb.client.gridfs.GridFSBucket;
-import com.mongodb.client.gridfs.GridFSDownloadStream;
 import com.mongodb.client.gridfs.model.GridFSFile;
-import com.mongodb.client.model.Filters;
-import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.UnsupportedTagException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.apache.poi.util.IOUtils;
-import org.apache.tika.Tika;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.support.ResourceRegion;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.http.*;
-import org.springframework.util.FileCopyUtils;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.*;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/track")
@@ -92,27 +80,7 @@ public class TrackController {
     }
 
 
-    @GetMapping("/image/{id}")
-    public void getImage(@PathVariable String id, HttpServletResponse response) {
-        try {
-            ObjectId objectId = new ObjectId(id);
-            GridFSFile file = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(objectId)));
-            if (file != null) {
-                GridFsResource resource = gridFsTemplate.getResource(file);
-                InputStream inputStream = resource.getInputStream();
-                Object contentTypeObj = file.getMetadata().get("contentType");
-                if (contentTypeObj != null) {
-                    String contentType = contentTypeObj.toString();
-                    response.setContentType(contentType);
-                }
-                response.setCharacterEncoding("UTF-8");
-                StreamUtils.copy(inputStream, response.getOutputStream());
-                response.flushBuffer();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+
 
     @GetMapping("/mp3/{id}/artwork")
     public ResponseEntity<byte[]> getMp3Artwork(@PathVariable("id") ObjectId id) throws IOException {
