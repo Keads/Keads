@@ -7,7 +7,10 @@ from feature_extraction.valence import calculate_valence
 from feature_extraction.liveness import calculate_liveness
 from feature_extraction.instrumentalness import calculate_instrumentalness
 from feature_extraction.speechiness import calculate_speechiness
-
+from feature_extraction.loudness import calculate_loudness
+from feature_extraction.key import calculate_key
+from feature_extraction.energy import calculate_energy
+from feature_extraction.danceability import calculate_danceability
 
 # MongoDB connection details
 mongo_uri = "mongodb://localhost:32768"
@@ -35,16 +38,23 @@ if file_object:
     liveness = calculate_liveness(audio, sr)
     instrumentalness = calculate_instrumentalness(audio,sr)
     speechiness = calculate_speechiness(audio, sr)
+    loudness = calculate_loudness(audio, sr)
+    key = calculate_key(audio, sr)
+    energy = calculate_energy(audio, sr)
+    danceability = calculate_danceability(audio,sr)
 
     # Print the results
     if acousticness is not None :
         print("Filename:", filename)
         print("Acousticness:", acousticness)
-        #print("Energy:", energy)
+        print("Energy:", energy)
         print("Valence:", valence)
         print("Liveness", liveness)
         print("Instrumentalness", instrumentalness)
         print("Speechiness", speechiness)
+        print("Loudness", loudness)
+        print("Key", key)
+        print("Danceability", danceability)
     else:
         print("Failed to calculate features.")
 else:
