@@ -11,6 +11,9 @@ from feature_extraction.loudness import calculate_loudness
 from feature_extraction.key import calculate_key
 from feature_extraction.energy import calculate_energy
 from feature_extraction.danceability import calculate_danceability
+from feature_extraction.tempo import calculate_tempo
+from feature_extraction.duration import calculate_duration
+from feature_extraction.mode import calculate_mode
 
 # MongoDB connection details
 mongo_uri = "mongodb://localhost:32768"
@@ -42,6 +45,9 @@ if file_object:
     key = calculate_key(audio, sr)
     energy = calculate_energy(audio, sr)
     danceability = calculate_danceability(audio,sr)
+    tempo = calculate_tempo(audio, sr)
+    duration = calculate_duration(audio, sr)
+    mode = calculate_mode(audio, sr)
 
     # Print the results
     if acousticness is not None :
@@ -55,6 +61,9 @@ if file_object:
         print("Loudness", loudness)
         print("Key", key)
         print("Danceability", danceability)
+        print("Tempo", tempo)
+        print("Duration", duration)
+        print("Mode", mode)
     else:
         print("Failed to calculate features.")
 else:
