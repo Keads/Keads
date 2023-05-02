@@ -1,7 +1,13 @@
 from pymongo import MongoClient
 from gridfs import GridFS
 from bson import ObjectId
+import librosa
 from feature_extraction.acousticness import calculate_acousticness
+from feature_extraction.valence import calculate_valence
+from feature_extraction.liveness import calculate_liveness
+from feature_extraction.instrumentalness import calculate_instrumentalness
+from feature_extraction.speechiness import calculate_speechiness
+
 
 # MongoDB connection details
 mongo_uri = "mongodb://localhost:32768"
@@ -22,14 +28,24 @@ if file_object:
     # Get the filename
     filename = file_object.filename
 
-    # Call the function and get the result
-    acousticness = calculate_acousticness(file_object)
+    # Call the functions to calculate features
+    audio, sr = librosa.load(file_object)
+    acousticness = calculate_acousticness(audio, sr)
+    valence = calculate_valence(audio, sr)
+    liveness = calculate_liveness(audio, sr)
+    instrumentalness = calculate_instrumentalness(audio,sr)
+    speechiness = calculate_speechiness(audio, sr)
 
-    # Print the result
-    if acousticness is not None:
+    # Print the results
+    if acousticness is not None :
         print("Filename:", filename)
         print("Acousticness:", acousticness)
+        #print("Energy:", energy)
+        print("Valence:", valence)
+        print("Liveness", liveness)
+        print("Instrumentalness", instrumentalness)
+        print("Speechiness", speechiness)
     else:
-        print("Failed to calculate acousticness.")
+        print("Failed to calculate features.")
 else:
     print("File not found.")

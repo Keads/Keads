@@ -1,10 +1,7 @@
 import librosa
 import numpy as np
 
-def calculate_acousticness(file_object):
-    # Load audio data using LibROSA
-    audio, sr = librosa.load(file_object)
-
+def calculate_acousticness(audio, sr):
     # Compute the acousticness feature
     acousticness = librosa.feature.spectral_centroid(y=audio, sr=sr)
 
