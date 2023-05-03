@@ -25,6 +25,9 @@ public class TrackService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    @Autowired
+    private MongoRepo repo;
+
 
 
     public String addOne(MultipartFile file) throws Exception {
@@ -37,6 +40,10 @@ public class TrackService {
                 file.getContentType(),
                 metadata);
         String returner = "Song id: " + id.toString();
+        Info infodoc = new Info();
+        infodoc.setSong_id(id.toString());
+        infodoc.setFilename(file.getOriginalFilename());
+        repo.insert(infodoc);
         return returner;
     }
 
@@ -47,6 +54,10 @@ public class TrackService {
             metadata.put("filename", track.getOriginalFilename());
             metadata.put("contentType", track.getContentType());
             ObjectId trackId = gridFsTemplate.store(track.getInputStream(), track.getOriginalFilename(), metadata);
+            Info infodoc = new Info();
+            infodoc.setFilename(track.getOriginalFilename());
+            infodoc.setSong_id(trackId.toString());
+            repo.insert(infodoc);
             trackIds.add("track id: " +trackId.toString());
         }
         return trackIds;

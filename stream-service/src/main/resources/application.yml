@@ -3,7 +3,8 @@ spring:
     mongodb:
       uri: mongodb://localhost:32768
       database: StreamDB
+      autoIndexCreation: true
   servlet:
     multipart:
-      maxFileSize: 50MB
-      maxRequestSize: 50MB
+      maxFileSize: 10000MB
+      maxRequestSize: 10000MB

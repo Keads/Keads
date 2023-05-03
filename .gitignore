@@ -39,3 +39,24 @@ Thumbs.db
 
 # Custom
 /custom_directory/
+
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+*.pyz
+.pytest_cache/
+*.coverage
+.tox/
+.pyenv/
+.python-version
+*.egg-info/
+dist/
+build/
+venv/
+.env
+.env.*
+.idea/
+.vscode/
+*.swp
