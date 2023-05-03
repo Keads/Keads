@@ -41,7 +41,7 @@ public class TrackService {
                 metadata);
         String returner = "Song id: " + id.toString();
         Info infodoc = new Info();
-        infodoc.setSong_id(id.toString());
+        infodoc.setSong(id.toString());
         infodoc.setFilename(file.getOriginalFilename());
         repo.insert(infodoc);
         return returner;
@@ -56,7 +56,7 @@ public class TrackService {
             ObjectId trackId = gridFsTemplate.store(track.getInputStream(), track.getOriginalFilename(), metadata);
             Info infodoc = new Info();
             infodoc.setFilename(track.getOriginalFilename());
-            infodoc.setSong_id(trackId.toString());
+            infodoc.setSong(trackId.toString());
             repo.insert(infodoc);
             trackIds.add("track id: " +trackId.toString());
         }

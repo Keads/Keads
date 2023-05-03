@@ -31,6 +31,9 @@ public class TrackController {
     @Autowired
     private GridFsTemplate gridFsTemplate;
 
+    @Autowired
+    private MongoRepo repo;
+
 
 
     @PostMapping("/add")
@@ -121,7 +124,10 @@ public class TrackController {
     public ResponseEntity<String> deleteFiles(@PathVariable("ids") String ids) {
         List<String> idList = Arrays.asList(ids.split(","));
         for (String id : idList) {
+            Info info = repo.findBySong(id);
+            repo.delete(info);
             gridFsTemplate.delete(new Query(Criteria.where("_id").is(new ObjectId(id))));
+
         }
         return ResponseEntity.ok().build();
     }

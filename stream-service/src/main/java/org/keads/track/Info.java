@@ -11,7 +11,7 @@ public class Info {
     @Id
     private ObjectId id;
 
-    private String song_id;
+    private String song;
 
     private String filename;
 
@@ -211,11 +211,11 @@ public class Info {
         this.valence = valence;
     }
 
-    public String getSong_id() {
-        return song_id;
+    public String getSong() {
+        return song;
     }
 
-    public void setSong_id(String song_id) {
-        this.song_id = song_id;
+    public void setSong(String song_id) {
+        this.song = song_id;
     }
 }
