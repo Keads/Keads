@@ -60,3 +60,18 @@ venv/
 .idea/
 .vscode/
 *.swp
+# Ignore generated gRPC files
+**/*_pb2.py
+**/*_pb2_grpc.py
+
+# Ignore generated gRPC code directories
+**/generated
+
+# Ignore virtual environment
+venv/
+
+# Ignore compiled Python files
+*.pyc
+*.pyo
+__pycache__/
+
