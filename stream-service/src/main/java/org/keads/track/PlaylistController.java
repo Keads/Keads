@@ -65,6 +65,7 @@ public class PlaylistController {
         return ResponseEntity.ok("Playlist Removed!");
     }
 
+    @DeleteMapping
     public ResponseEntity<String> removePlaylists(
             @RequestBody List<String> playlistIds
     ) {
