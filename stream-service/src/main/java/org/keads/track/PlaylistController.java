@@ -48,11 +48,27 @@ public class PlaylistController {
         return ResponseEntity.ok("Song removed from the playlist!");
     }
 
+    @DeleteMapping("/{playlistId}/songs")
     public ResponseEntity<String> removeSongsFromPlaylist(
             @PathVariable String playlistId,
             @RequestBody List<String> songIds
     ) {
         service.removeSongsFromPlaylist(playlistId, songIds);
         return ResponseEntity.ok("Songs removed from playlist");
+    }
+
+    @DeleteMapping("/{playlistId}")
+    public ResponseEntity<String> deletePlaylist(
+            @PathVariable String playlistId
+    ) {
+        service.deletePlaylist(playlistId);
+        return ResponseEntity.ok("Playlist Removed!");
+    }
+
+    public ResponseEntity<String> removePlaylists(
+            @RequestBody List<String> playlistIds
+    ) {
+        service.removePlaylists(playlistIds);
+        return ResponseEntity.ok("Playlists removed successfully");
     }
 }

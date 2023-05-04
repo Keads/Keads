@@ -103,5 +103,17 @@ public class PlaylistService {
         playlistRepo.save(playlist);
     }
 
+    public void deletePlaylist(String playlistId) {
+        Playlist playlist = playlistRepo.findById(playlistId)
+                .orElseThrow(() -> new IllegalArgumentException("Playlist not found!"));
+        playlistRepo.delete(playlist);
+    }
+
+    public void removePlaylists(List<String> playlistIds) {
+        List<Playlist> playlists = playlistRepo.findAllById(playlistIds);
+        playlistRepo.deleteAll(playlists);
+    }
+
+
 
 }
