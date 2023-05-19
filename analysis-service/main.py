@@ -28,6 +28,7 @@ client = MongoClient(mongo_uri)
 database = client[database_name]
 fs = GridFS(database)
 
+
 @app.route('/analyze', methods=['POST'])
 def analyze_audio():
     # Retrieve the file from the request
@@ -80,6 +81,7 @@ def analyze_audio():
         return jsonify(response)
     else:
         return jsonify({'error': 'File not found.'}), 404
+
 
 if __name__ == '__main__':
     app.run()

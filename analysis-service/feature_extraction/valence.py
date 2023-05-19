@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def calculate_valence(audio, sr):
     # Calculate the valence feature
     valence = np.mean(audio)

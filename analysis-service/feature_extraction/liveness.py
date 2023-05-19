@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def calculate_liveness(audio, sr):
     # Calculate the liveness feature
     liveness = np.mean(np.abs(audio))

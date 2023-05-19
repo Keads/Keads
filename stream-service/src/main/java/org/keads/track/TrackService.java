@@ -3,6 +3,11 @@ package org.keads.track;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import com.mpatric.mp3agic.ID3v2;
+import com.mpatric.mp3agic.InvalidDataException;
+import com.mpatric.mp3agic.Mp3File;
+import com.mpatric.mp3agic.UnsupportedTagException;
+import org.apache.poi.util.IOUtils;
 import org.bson.types.ObjectId;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +64,31 @@ public class TrackService {
             infodoc.setSong(trackId.toString());
             repo.insert(infodoc);
             trackIds.add("track id: " +trackId.toString());
+            extractAndPrint(track.getInputStream());
         }
         return trackIds;
+    }
+
+    public void extractAndPrint(InputStream filer) {
+        try {
+            File tempFile = File.createTempFile("temp", ".mp3");
+            FileOutputStream outputStream = new FileOutputStream(tempFile);
+            IOUtils.copy(filer, outputStream);
+            outputStream.close();
+            Mp3File mp3File = new Mp3File(tempFile);
+            if (mp3File.hasId3v2Tag()) {
+                ID3v2 id3v2Tag = mp3File.getId3v2Tag();
+                System.out.println("Title: " + id3v2Tag.getTitle());
+                System.out.println("Artist: " + id3v2Tag.getArtist());
+                System.out.println("Album: " + id3v2Tag.getAlbum());
+                System.out.println("Genre: " + id3v2Tag.getGenreDescription());
+                System.out.println("Date: " + id3v2Tag.getDate());
+                // Print more metadata fields if needed
+            } else {
+                System.out.println("No ID3v2 tag found in the audio file.");
+            }
+        } catch (UnsupportedTagException | InvalidDataException | IOException e) {
+            e.printStackTrace();
+        }
     }
 }
