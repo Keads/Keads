@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,6 +28,10 @@ public class TrackController {
 
     @Autowired
     private TrackService service;
+
+    @Autowired
+    private PlaylistRepo playlistRepo;
+
 
     @Autowired
     private GridFsTemplate gridFsTemplate;
@@ -122,13 +127,40 @@ public class TrackController {
     @DeleteMapping("/{ids}")
     public ResponseEntity<String> deleteFiles(@PathVariable("ids") String ids) {
         List<String> idList = Arrays.asList(ids.split(","));
+
+        // Create a list to store the songs that need to be deleted from playlists
+        List<Info> songsToDeleteFromPlaylists = new ArrayList<>();
+
         for (String id : idList) {
             Info info = repo.findBySong(id);
-            repo.delete(info);
-            gridFsTemplate.delete(new Query(Criteria.where("_id").is(new ObjectId(id))));
 
+            if (info != null) {
+                // Delete the song from the repository
+                repo.delete(info);
+
+                // Delete the song from gridfs
+                gridFsTemplate.delete(new Query(Criteria.where("_id").is(new ObjectId(id))));
+
+                // Add the song to the list of songs to be deleted from playlists
+                songsToDeleteFromPlaylists.add(info);
+            }
         }
+
+        // Delete the songs from playlists
+        for (Info song : songsToDeleteFromPlaylists) {
+            deleteSongFromPlaylists(song);
+        }
+
         return ResponseEntity.ok().build();
+    }
+
+    private void deleteSongFromPlaylists(Info song) {
+        List<Playlist> playlists = playlistRepo.findBySongsContaining(song);
+
+        for (Playlist playlist : playlists) {
+            playlist.getSongs().remove(song);
+            playlistRepo.save(playlist);
+        }
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

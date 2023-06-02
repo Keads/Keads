@@ -1,10 +1,12 @@
 package org.keads.track;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PlaylistService {
@@ -115,5 +117,18 @@ public class PlaylistService {
     }
 
 
+    public List<Playlist> getAllPlaylists() {
+        return playlistRepo.findAll();
+    }
 
+
+    public Playlist getPlaylistById(String playlistId) {
+        Optional<Playlist> playlistOptional = playlistRepo.findById(String.valueOf(new ObjectId(playlistId)));
+
+        if (playlistOptional.isPresent()) {
+            return playlistOptional.get();
+        } else {
+            throw new IllegalArgumentException("Playlist not found");
+        }
+    }
 }

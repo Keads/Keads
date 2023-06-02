@@ -23,9 +23,9 @@ public class PlaylistController {
     @PostMapping("{playlistId}/songs")
     public ResponseEntity<String> addToPlaylist(
             @PathVariable String playlistId,
-            @RequestBody List<String> songsIds
+            @RequestBody List<String> ids
     ) {
-        service.addSongToPlaylist(playlistId, songsIds);
+        service.addSongToPlaylist(playlistId, ids);
         return ResponseEntity.ok("Songs added to playlists");
     }
 
@@ -72,4 +72,17 @@ public class PlaylistController {
         service.removePlaylists(playlistIds);
         return ResponseEntity.ok("Playlists removed successfully");
     }
+
+    @GetMapping
+    public ResponseEntity<List<Playlist>> getAllPlaylists() {
+        List<Playlist> playlists = service.getAllPlaylists();
+        return ResponseEntity.ok(playlists);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Playlist> getPlaylistById(@PathVariable("id") String id) {
+        Playlist playlist = service.getPlaylistById(id);
+        return ResponseEntity.ok(playlist);
+    }
+
 }

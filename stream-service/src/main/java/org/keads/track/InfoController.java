@@ -31,4 +31,23 @@ public class InfoController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/artist/{artist}")
+    public ResponseEntity<List<Info>> getSongsByArtist(@PathVariable("artist") String artist) {
+        List<Info> songs = service.getSongsByArtist(artist);
+        return ResponseEntity.ok(songs);
+    }
+
+    @GetMapping("/album/{album}")
+    public ResponseEntity<List<Info>> getSongsByAlbum(@PathVariable("album") String album) {
+        List<Info> songs = service.getSongsByAlbum(album);
+        return ResponseEntity.ok(songs);
+    }
+
+    @GetMapping("/genre/{genre}")
+    public ResponseEntity<List<Info>> getSongsByGenre(@PathVariable("genre") String genre) {
+        List<Info> songs = service.getSongsByGenre(genre);
+        return ResponseEntity.ok(songs);
+    }
+
 }

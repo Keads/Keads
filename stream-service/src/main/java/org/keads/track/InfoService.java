@@ -22,4 +22,16 @@ public class InfoService {
         return infoOptional.orElse(null);
     }
 
+    public List<Info> getSongsByArtist(String artist) {
+        return repo.findByArtist(artist);
+    }
+
+    public List<Info> getSongsByAlbum(String album) {
+        return repo.findByAlbum(album);
+    }
+
+    public List<Info> getSongsByGenre(String genre) {
+        return repo.findByGenre(genre);
+    }
+
 }
