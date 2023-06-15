@@ -13,7 +13,12 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
+import org.springframework.http.*;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -23,6 +28,11 @@ import java.util.List;
 
 @Service
 public class TrackService {
+
+    private static final String TOPIC_NAME = "song";
+
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
 
     @Autowired
     private GridFsTemplate gridFsTemplate;
@@ -54,6 +64,9 @@ public class TrackService {
 
     public List<String> saveTracks(List<MultipartFile> tracks) throws IOException {
         List<String> trackIds = new ArrayList<>();
+        RestTemplate restTemplate = new RestTemplate();
+        org.springframework.http.HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
         for (MultipartFile track : tracks) {
             DBObject metadata = new BasicDBObject();
             metadata.put("filename", track.getOriginalFilename());
@@ -64,7 +77,16 @@ public class TrackService {
             infodoc.setSong(trackId.toString());
             repo.insert(infodoc);
             trackIds.add("track id: " +trackId.toString());
+            //kafkaTemplate.send("song", trackId.toString());
             extractAndPrint(track.getInputStream());
+
+            MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+            body.add("trackId", trackId.toString());
+            HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(body, headers);
+            ResponseEntity<String> responseEntity = restTemplate.exchange("http://localhost:5000/features", HttpMethod.POST, requestEntity, String.class);
+            String response = responseEntity.getBody();
+            // Handle the response as needed
+
         }
         return trackIds;
     }
