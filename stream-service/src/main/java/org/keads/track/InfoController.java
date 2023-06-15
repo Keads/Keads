@@ -2,10 +2,7 @@ package org.keads.track;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -49,5 +46,11 @@ public class InfoController {
         List<Info> songs = service.getSongsByGenre(genre);
         return ResponseEntity.ok(songs);
     }
+
+    //@GetMapping("/search")
+    //public ResponseEntity<List<Info>> searchSongs(@RequestParam("q") String query) {
+     //   List<Info> songs = service.searchSongs(query);
+     //   return ResponseEntity.ok(songs);
+    //}
 
 }

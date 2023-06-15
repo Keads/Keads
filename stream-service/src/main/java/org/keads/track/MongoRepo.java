@@ -1,5 +1,6 @@
 package org.keads.track;
 
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,4 +15,5 @@ public interface MongoRepo extends MongoRepository<Info, String> {
 
     List<Info> findByGenre(String genre);
 
+    //List<Info> findAll(Query query);
 }

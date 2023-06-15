@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:32768
+      uri: mongodb://localhost:32782
       database: StreamDB
       autoIndexCreation: true
   servlet:
