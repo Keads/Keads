@@ -64,9 +64,9 @@ public class TrackService {
 
     public List<String> saveTracks(List<MultipartFile> tracks) throws IOException {
         List<String> trackIds = new ArrayList<>();
-        RestTemplate restTemplate = new RestTemplate();
-        org.springframework.http.HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        //RestTemplate restTemplate = new RestTemplate();
+        //org.springframework.http.HttpHeaders headers = new HttpHeaders();
+        //headers.setContentType(MediaType.APPLICATION_JSON);
         for (MultipartFile track : tracks) {
             DBObject metadata = new BasicDBObject();
             metadata.put("filename", track.getOriginalFilename());
@@ -80,11 +80,11 @@ public class TrackService {
             //kafkaTemplate.send("song", trackId.toString());
             extractAndPrint(track.getInputStream());
 
-            MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-            body.add("trackId", trackId.toString());
-            HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(body, headers);
-            ResponseEntity<String> responseEntity = restTemplate.exchange("http://localhost:5000/features", HttpMethod.POST, requestEntity, String.class);
-            String response = responseEntity.getBody();
+            //MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+            //body.add("trackId", trackId.toString());
+            //HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(body, headers);
+            //ResponseEntity<String> responseEntity = restTemplate.exchange("http://localhost:5000/features", HttpMethod.POST, requestEntity, String.class);
+            //String response = responseEntity.getBody();
             // Handle the response as needed
 
         }
