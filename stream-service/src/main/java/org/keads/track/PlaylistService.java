@@ -19,22 +19,7 @@ public class PlaylistService {
     private PlaylistRepo playlistRepo;
 
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Info other = (Info) o;
-        return Objects.equals(id, other.id);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 
 
     public void createPlaylist(String name, List<String> ids) {

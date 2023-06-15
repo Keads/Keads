@@ -1,0 +1,58 @@
+{
+    "realm": "kead",
+    "enabled": true,
+    "displayName": "realm",
+    "users": [
+      {
+        "username": "tester",
+        "enabled": true,
+        "credentials": [
+          {
+            "type": "user",
+            "value": "password123"
+          }
+        ]
+      } 
+    ],
+    "roles": [
+      {
+        "name": "user",
+        "description": "Standard User Role"
+      },
+      {
+        "name": "admin",
+        "description": "Admin Role"
+      }
+    ],
+    "clientScopes": [
+      {
+        "name": "profile",
+        "description": "User Profile Information",
+        "protocol": "openid-connect",
+        "attributes": {
+          "include.in.token.scope": "true"
+        }
+      }
+    ],
+    "clients": [
+      {
+        "clientId": "your-client-id",
+        "enabled": true,
+        "directAccessGrantsEnabled": true,
+        "redirectUris": [
+          "http://localhost:8080/*"
+        ],
+        "webOrigins": [
+          "http://localhost:8080"
+        ],
+        "defaultClientScopes": [
+          "profile",
+          "roles"
+        ],
+        "optionalClientScopes": [
+          "email"
+        ]
+      }
+    ]
+  }
+  
