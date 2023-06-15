@@ -1,4 +1,4 @@
-# Keads Back-end
+# Stream Back-end
 
 ## Components
 - Stream Service
